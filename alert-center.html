@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能预警中心 - 舞美数据中台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* 页面特定样式 */
+        
+        /* 预警项目样式 */
+        
+        .alert-item {
+            padding: 16px;
+            border-radius: 8px;
+            background-color: #fef2f2;
+            margin-bottom: 16px;
+            border: 1px solid #fee2e2;
+            transition: all 0.3s;
+        }
+        
+        .alert-item:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .alert-warning {
+            background-color: #fffbeb;
+            border-color: #fef3c7;
+        }
+        
+        .alert-info {
+            background-color: #eff6ff;
+            border-color: #dbeafe;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-right: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .tag:hover {
+            transform: translateY(-1px);
+        }
+        
+        .tag-blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+        
+        .tag-green {
+            background-color: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .tag-orange {
+            background-color: #ffedd5;
+            color: #ea580c;
+            border: 1px solid #fed7aa;
+        }
+        
+        .tag-red {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        .page-item {
+            margin: 0 4px;
+        }
+        
+        .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .page-link:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        
+        .page-link.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .chart-container {
+            height: 350px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .data-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .data-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+        
+        .trend-up {
+            color: #16a34a;
+        }
+        
+        .trend-down {
+            color: #dc2626;
+        }
+        
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .tab-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            margin-right: 24px;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab-item:hover {
+            color: #3b82f6;
+        }
+        
+        .tab-item.active {
+            color: #3b82f6;
+        }
+        
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #3b82f6;
+            border-radius: 3px 3px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://via.placeholder.com/30x30" alt="Logo" class="mr-2">
+            <h1>舞美数据中台</h1>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="index.html" class="sidebar-menu-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="dashboard.html" class="sidebar-menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>数据看板</span>
+            </a>
+            <a href="alert-center.html" class="sidebar-menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>智能预警中心</span>
+            </a>
+            <a href="props-management.html" class="sidebar-menu-item">
+                <i class="fas fa-box"></i>
+                <span>道具管理</span>
+            </a>
+            <a href="inbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>入库管理</span>
+            </a>
+            <a href="outbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>出库管理</span>
+            </a>
+            <a href="supplier-management.html" class="sidebar-menu-item">
+                <i class="fas fa-truck"></i>
+                <span>供应商管理</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 顶部状态栏 -->
+    <header class="top-header">
+        <div class="flex items-center">
+            <h2 class="text-xl font-bold">智能预警中心</h2>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center">
+                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-2">8</span>
+                <span>待处理预警</span>
+            </div>
+            <div class="flex items-center ml-4">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                <span>管理员</span>
+                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content px-6 py-6">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <button class="btn btn-primary mr-2">
+                    <i class="fas fa-cog mr-2"></i> 预警设置
+                </button>
+                <button class="btn btn-default">
+                    <i class="fas fa-bell mr-2"></i> 消息通知
+                </button>
+            </div>
+        </div>
+
+        <!-- 预警统计卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="data-card hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <div class="text-gray-600 text-sm font-medium">库存不足预警</div>
+                <div class="data-value text-red-500">5</div>
+                <div class="text-xs text-gray-500 flex items-center justify-center">
+                    <span>较昨日</span> 
+                    <span class="trend-up ml-1 flex items-center"><i class="fas fa-arrow-up mr-1"></i>2</span>
+                </div>
+            </div>
+            <div class="data-card hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <div class="text-gray-600 text-sm font-medium">临期设备预警</div>
+                <div class="data-value text-orange-500">3</div>
+                <div class="text-xs text-gray-500 flex items-center justify-center">
+                    <span>较昨日</span> 
+                    <span class="trend-down ml-1 flex items-center"><i class="fas fa-arrow-down mr-1"></i>1</span>
+                </div>
+            </div>
+            <div class="data-card hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <div class="text-gray-600 text-sm font-medium">设备维护提醒</div>
+                <div class="data-value text-blue-500">8</div>
+                <div class="text-xs text-gray-500 flex items-center justify-center">
+                    <span>较昨日</span> 
+                    <span class="trend-up ml-1 flex items-center"><i class="fas fa-arrow-up mr-1"></i>3</span>
+                </div>
+            </div>
+            <div class="data-card hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <div class="text-gray-600 text-sm font-medium">逾期未还预警</div>
+                <div class="data-value text-red-500">2</div>
+                <div class="text-xs text-gray-500 flex items-center justify-center">
+                    <span>较昨日</span> 
+                    <span class="trend-down ml-1 flex items-center"><i class="fas fa-arrow-down mr-1"></i>1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 标签页导航 -->
+        <div class="tab-nav mb-6">
+            <div class="tab-item active">全部预警</div>
+            <div class="tab-item">库存预警</div>
+            <div class="tab-item">设备预警</div>
+            <div class="tab-item">出库预警</div>
+            <div class="tab-item">已处理</div>
+        </div>
+
+        <!-- 预警列表 -->
+        <div class="card mb-6">
+            <div class="card-header">
+                <span class="text-lg">预警列表</span>
+                <div class="flex items-center">
+                    <div class="relative mr-3">
+                        <input type="text" class="border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="搜索预警内容">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <button class="btn btn-default">
+                        <i class="fas fa-filter mr-2"></i> 筛选
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert-item">
+                    <div class="flex items-center mb-1">
+                        <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded mr-2">紧急</span>
+                        <span class="font-medium">库存不足预警</span>
+                        <span class="ml-auto text-xs text-gray-500">10分钟前</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">DM001 LED聚光灯剩余5台（安全库存10台）</p>
+                    <div class="flex justify-between">
+                        <div>
+                            <span class="tag tag-blue">库存预警</span>
+                            <span class="tag tag-red">紧急</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-all">
+                                <i class="fas fa-eye mr-1"></i> 查看
+                            </button>
+                            <button class="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-sm font-medium hover:bg-green-100 transition-all">
+                                <i class="fas fa-check-circle mr-1"></i> 处理
+                            </button>
+                            <button class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                <i class="fas fa-times-circle mr-1"></i> 忽略
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-item alert-warning">
+                    <div class="flex items-center mb-1">
+                        <span class="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded mr-2">警告</span>
+                        <span class="font-medium">临期设备预警</span>
+                        <span class="ml-auto text-xs text-gray-500">2小时前</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">音响设备A002剩余保质期7天</p>
+                    <div class="flex justify-between">
+                        <div>
+                            <span class="tag tag-orange">设备预警</span>
+                            <span class="tag tag-orange">临期</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-all">
+                                <i class="fas fa-eye mr-1"></i> 查看
+                            </button>
+                            <button class="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-sm font-medium hover:bg-green-100 transition-all">
+                                <i class="fas fa-check-circle mr-1"></i> 处理
+                            </button>
+                            <button class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                <i class="fas fa-times-circle mr-1"></i> 忽略
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-item alert-info">
+                    <div class="flex items-center mb-1">
+                        <span class="bg-blue-500 text-white text-xs px-2 py-0.5 rounded mr-2">提示</span>
+                        <span class="font-medium">设备维护提醒</span>
+                        <span class="ml-auto text-xs text-gray-500">昨天</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">移动灯光组件需要例行维护检查</p>
+                    <div class="flex justify-between">
+                        <div>
+                            <span class="tag tag-blue">维护提醒</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-all">
+                                <i class="fas fa-eye mr-1"></i> 查看
+                            </button>
+                            <button class="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-sm font-medium hover:bg-green-100 transition-all">
+                                <i class="fas fa-check-circle mr-1"></i> 处理
+                            </button>
+                            <button class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                <i class="fas fa-times-circle mr-1"></i> 忽略
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-item">
+                    <div class="flex items-center mb-1">
+                        <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded mr-2">紧急</span>
+                        <span class="font-medium">逾期未还预警</span>
+                        <span class="ml-auto text-xs text-gray-500">昨天</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">电视节目录制项目，出库单号OUT20230525002，已逾期16天未归还</p>
+                    <div class="flex justify-between">
+                        <div>
+                            <span class="tag tag-red">出库预警</span>
+                            <span class="tag tag-red">逾期</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-all">
+                                <i class="fas fa-eye mr-1"></i> 查看
+                            </button>
+                            <button class="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-sm font-medium hover:bg-green-100 transition-all">
+                                <i class="fas fa-check-circle mr-1"></i> 处理
+                            </button>
+                            <button class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                <i class="fas fa-times-circle mr-1"></i> 忽略
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-item alert-warning">
+                    <div class="flex items-center mb-1">
+                        <span class="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded mr-2">警告</span>
+                        <span class="font-medium">库存积压预警</span>
+                        <span class="ml-auto text-xs text-gray-500">2天前</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">舞台背景板BG-2000超过90天未使用，建议调整库存</p>
+                    <div class="flex justify-between">
+                        <div>
+                            <span class="tag tag-orange">库存预警</span>
+                            <span class="tag tag-orange">积压</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-all">
+                                <i class="fas fa-eye mr-1"></i> 查看
+                            </button>
+                            <button class="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-sm font-medium hover:bg-green-100 transition-all">
+                                <i class="fas fa-check-circle mr-1"></i> 处理
+                            </button>
+                            <button class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                <i class="fas fa-times-circle mr-1"></i> 忽略
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination p-4">
+                <div class="page-item">
+                    <a class="page-link hover:shadow-md"><i class="fas fa-angle-left"></i></a>
+                </div>
+                <div class="page-item">
+                    <a class="page-link active hover:shadow-md">1</a>
+                </div>
+                <div class="page-item">
+                    <a class="page-link hover:shadow-md">2</a>
+                </div>
+                <div class="page-item">
+                    <a class="page-link hover:shadow-md">3</a>
+                </div>
+                <div class="page-item">
+                    <a class="page-link hover:shadow-md"><i class="fas fa-angle-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 预警趋势图 -->
+        <div class="card">
+            <div class="card-header">
+                <span class="text-lg">预警趋势分析</span>
+                <div>
+                    <select class="text-sm border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        <option>近7天</option>
+                        <option>近30天</option>
+                        <option>近90天</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="alert-trend-chart" class="chart-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 初始化预警趋势图
+        var alertTrendChart = echarts.init(document.getElementById('alert-trend-chart'));
+        var alertTrendOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                borderColor: '#e2e8f0',
+                borderWidth: 1,
+                textStyle: {
+                    color: '#334155'
+                },
+                axisPointer: {
+                    type: 'shadow',
+                    shadowStyle: {
+                        color: 'rgba(0, 0, 0, 0.03)'
+                    }
+                }
+            },
+            legend: {
+                data: ['库存不足预警', '临期设备预警', '设备维护提醒', '逾期未还预警'],
+                right: '4%',
+                textStyle: {
+                    color: '#475569'
+                },
+                itemWidth: 15,
+                itemHeight: 10,
+                itemGap: 20
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                top: '60px',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['6/9', '6/10', '6/11', '6/12', '6/13', '6/14', '6/15'],
+                axisLine: {
+                    lineStyle: {
+                        color: '#e2e8f0'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    color: '#64748b'
+                }
+            },
+            yAxis: {
+                type: 'value',
+                splitLine: {
+                    lineStyle: {
+                        color: '#f1f5f9',
+                        type: 'dashed'
+                    }
+                },
+                axisLabel: {
+                    color: '#64748b'
+                },
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                }
+            },
+            series: [
+                {
+                    name: '库存不足预警',
+                    type: 'line',
+                    data: [3, 2, 3, 4, 3, 3, 5],
+                    smooth: true,
+                    symbol: 'emptyCircle',
+                    symbolSize: 6,
+                    lineStyle: {
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#dc2626'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(220, 38, 38, 0.2)'
+                            }, {
+                                offset: 1, color: 'rgba(220, 38, 38, 0)'
+                            }]
+                        }
+                    }
+                },
+                {
+                    name: '临期设备预警',
+                    type: 'line',
+                    data: [2, 3, 4, 2, 5, 4, 3],
+                    smooth: true,
+                    symbol: 'emptyCircle',
+                    symbolSize: 6,
+                    lineStyle: {
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#ea580c'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(234, 88, 12, 0.2)'
+                            }, {
+                                offset: 1, color: 'rgba(234, 88, 12, 0)'
+                            }]
+                        }
+                    }
+                },
+                {
+                    name: '设备维护提醒',
+                    type: 'line',
+                    data: [5, 4, 6, 5, 7, 5, 8],
+                    smooth: true,
+                    symbol: 'emptyCircle',
+                    symbolSize: 6,
+                    lineStyle: {
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#3b82f6'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(59, 130, 246, 0.2)'
+                            }, {
+                                offset: 1, color: 'rgba(59, 130, 246, 0)'
+                            }]
+                        }
+                    }
+                },
+                {
+                    name: '逾期未还预警',
+                    type: 'line',
+                    data: [1, 3, 2, 3, 2, 3, 2],
+                    smooth: true,
+                    symbol: 'emptyCircle',
+                    symbolSize: 6,
+                    lineStyle: {
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#8b5cf6'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(139, 92, 246, 0.2)'
+                            }, {
+                                offset: 1, color: 'rgba(139, 92, 246, 0)'
+                            }]
+                        }
+                    }
+                }
+            ]
+        };
+        alertTrendChart.setOption(alertTrendOption);
+
+        // 窗口大小变化时重新调整图表大小
+        window.addEventListener('resize', function() {
+            alertTrendChart.resize();
+        });
+    </script>
+</body>
+</html>

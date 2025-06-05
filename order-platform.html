@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舞美设备下单平台 - PC端</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .page-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .page-frame {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            height: 700px;
+        }
+        
+        .page-title {
+            background: #3859D3;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 8px;
+        }
+        
+        iframe {
+            width: 100%;
+            height: calc(100% - 40px);
+            border: none;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #3859D3;
+            margin: 0;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+            padding: 8px 15px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            margin-right: 10px;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            background: #3859D3;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .action-btn i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-theater-masks"></i> 舞美设备下单平台</h1>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="用户头像">
+                </div>
+                <div class="user-name">张经理</div>
+            </div>
+            <div class="action-btn">
+                <i class="fas fa-headset"></i> 客服中心
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-container">
+        <!-- 首页 -->
+        <div class="page-frame">
+            <div class="page-title">
+                <i class="fas fa-home"></i> 首页
+            </div>
+            <iframe src="mobile/equipment-home.html"></iframe>
+        </div>
+        
+        <!-- 设备列表页 -->
+        <div class="page-frame">
+            <div class="page-title">
+                <i class="fas fa-list"></i> 设备列表
+            </div>
+            <iframe src="mobile/equipment-list.html"></iframe>
+        </div>
+        
+        <!-- 设备详情页 -->
+        <div class="page-frame">
+            <div class="page-title">
+                <i class="fas fa-info-circle"></i> 设备详情
+            </div>
+            <iframe src="mobile/equipment-detail.html"></iframe>
+        </div>
+        
+        <!-- 订单确认页 -->
+        <div class="page-frame">
+            <div class="page-title">
+                <i class="fas fa-clipboard-check"></i> 订单确认
+            </div>
+            <iframe src="mobile/order-confirm.html"></iframe>
+        </div>
+        
+        <!-- 支付页 -->
+        <div class="page-frame">
+            <div class="page-title">
+                <i class="fas fa-credit-card"></i> 支付页面
+            </div>
+            <iframe src="mobile/payment.html"></iframe>
+        </div>
+        
+        <!-- 订单管理页 -->
+        <div class="page-frame">
+            <div class="page-title">
+                <i class="fas fa-tasks"></i> 订单管理
+            </div>
+            <iframe src="mobile/order-management.html"></iframe>
+        </div>
+    </div>
+</body>
+</html>

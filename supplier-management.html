@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>供应商/客户管理 - 舞美数据中台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://via.placeholder.com/30x30" alt="Logo" class="mr-2">
+            <h1>舞美数据中台</h1>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="index.html" class="sidebar-menu-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="dashboard.html" class="sidebar-menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>数据看板</span>
+            </a>
+            <a href="alert-center.html" class="sidebar-menu-item">
+                <i class="fas fa-bell"></i>
+                <span>智能预警中心</span>
+            </a>
+            <a href="props-management.html" class="sidebar-menu-item">
+                <i class="fas fa-box"></i>
+                <span>道具管理</span>
+            </a>
+            <a href="inbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>入库管理</span>
+            </a>
+            <a href="outbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>出库管理</span>
+            </a>
+            <a href="supplier-management.html" class="sidebar-menu-item active">
+                <i class="fas fa-users"></i>
+                <span>供应商管理</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 顶部状态栏 -->
+    <header class="top-header">
+        <div class="flex items-center">
+            <h2 class="text-xl font-bold">供应商管理</h2>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center ml-4">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                <span>管理员</span>
+                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">供应商/客户管理</h2>
+            <div>
+                <button class="btn btn-primary mr-2">
+                    <i class="fas fa-plus mr-2"></i> 新增供应商
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus mr-2"></i> 新增客户
+                </button>
+            </div>
+        </div>
+
+        <!-- 标签页导航 -->
+        <div class="tab-nav mb-6">
+            <div class="tab-item active">供应商管理</div>
+            <div class="tab-item">客户管理</div>
+        </div>
+
+        <!-- 搜索筛选区 -->
+        <div class="card mb-6">
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">供应商名称</label>
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm" placeholder="请输入供应商名称">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">联系人</label>
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm" placeholder="请输入联系人姓名">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">合作状态</label>
+                        <select class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm">
+                            <option value="">全部</option>
+                            <option value="active">合作中</option>
+                            <option value="inactive">已终止</option>
+                            <option value="pending">洽谈中</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <button class="btn btn-primary py-1.5 px-3 text-sm">
+                            <i class="fas fa-search mr-1"></i> 搜索
+                        </button>
+                        <button class="btn btn-default py-1.5 px-3 text-sm">
+                            <i class="fas fa-redo mr-1"></i> 重置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>供应商编号</th>
+                                <th>供应商名称</th>
+                                <th>联系人</th>
+                                <th>联系电话</th>
+                                <th>主营产品</th>
+                                <th>合作状态</th>
+                                <th>最近合作时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SP001</td>
+                                <td>星光灯光设备有限公司</td>
+                                <td>张经理</td>
+                                <td>13812345678</td>
+                                <td>舞台灯光设备</td>
+                                <td><span class="tag tag-green">合作中</span></td>
+                                <td>2023-05-20</td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">编辑</button>
+                                    <button class="text-red-600">删除</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SP002</td>
+                                <td>音韵音响科技有限公司</td>
+                                <td>李总</td>
+                                <td>13987654321</td>
+                                <td>专业音响设备</td>
+                                <td><span class="tag tag-green">合作中</span></td>
+                                <td>2023-04-15</td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">编辑</button>
+                                    <button class="text-red-600">删除</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SP003</td>
+                                <td>舞台背景制作工作室</td>
+                                <td>王设计</td>
+                                <td>13765432198</td>
+                                <td>舞台背景、道具</td>
+                                <td><span class="tag tag-blue">洽谈中</span></td>
+                                <td>2023-05-10</td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">编辑</button>
+                                    <button class="text-red-600">删除</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SP004</td>
+                                <td>创意舞美设计有限公司</td>
+                                <td>赵总监</td>
+                                <td>13609876543</td>
+                                <td>舞美设计、灯光设计</td>
+                                <td><span class="tag tag-green">合作中</span></td>
+                                <td>2023-03-25</td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">编辑</button>
+                                    <button class="text-red-600">删除</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SP005</td>
+                                <td>先锋投影设备有限公司</td>
+                                <td>刘经理</td>
+                                <td>13512345678</td>
+                                <td>投影仪、显示设备</td>
+                                <td><span class="tag tag-red">已终止</span></td>
+                                <td>2022-12-10</td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">编辑</button>
+                                    <button class="text-red-600">删除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination p-4">
+                    <div class="page-item">
+                        <a class="page-link"><i class="fas fa-angle-left"></i></a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link active">1</a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link">2</a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link">3</a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link"><i class="fas fa-angle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

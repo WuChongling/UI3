@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出库管理 - 舞美数据中台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* 页面特定样式 */
+        .header {
+            display: none; /* 隐藏原有的header */
+        }
+        
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 16px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-body {
+            padding: 16px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #096dd9;
+        }
+        
+        .btn-default {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-default:hover {
+            background: #d9d9d9;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+        
+        .tag-blue {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border: 1px solid #91d5ff;
+        }
+        
+        .tag-green {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .tag-orange {
+            background-color: #fff7e6;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+        
+        .tag-red {
+            background-color: #fff1f0;
+            color: #f5222d;
+            border: 1px solid #ffa39e;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background-color: #fafafa;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background-color: #fafafa;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+        
+        .page-item {
+            margin: 0 4px;
+        }
+        
+        .page-link {
+            display: inline-block;
+            padding: 4px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .page-link.active {
+            background-color: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        .steps {
+            display: flex;
+            margin-bottom: 24px;
+        }
+        
+        .step-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-item:not(:last-child):after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #f0f0f0;
+            z-index: 1;
+        }
+        
+        .step-item.active:not(:last-child):after {
+            background-color: #1890ff;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            color: #999;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 8px;
+        }
+        
+        .step-item.active .step-number {
+            background-color: #1890ff;
+            color: white;
+        }
+        
+        .step-title {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .step-item.active .step-title {
+            color: #1890ff;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://via.placeholder.com/30x30" alt="Logo" class="mr-2">
+            <h1>舞美数据中台</h1>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="index.html" class="sidebar-menu-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="dashboard.html" class="sidebar-menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>数据看板</span>
+            </a>
+            <a href="alert-center.html" class="sidebar-menu-item">
+                <i class="fas fa-bell"></i>
+                <span>智能预警中心</span>
+            </a>
+            <a href="props-management.html" class="sidebar-menu-item">
+                <i class="fas fa-box"></i>
+                <span>道具管理</span>
+            </a>
+            <a href="inbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>入库管理</span>
+            </a>
+            <a href="outbound.html" class="sidebar-menu-item active">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>出库管理</span>
+            </a>
+            <a href="supplier-management.html" class="sidebar-menu-item">
+                <i class="fas fa-users"></i>
+                <span>供应商管理</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 顶部状态栏 -->
+    <header class="top-header">
+        <div class="flex items-center">
+            <h2 class="text-xl font-bold">出库管理</h2>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center ml-4">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                <span>管理员</span>
+                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">出库管理</h2>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i> 新增出库单
+            </button>
+        </div>
+
+        <!-- 步骤条 -->
+        <div class="card mb-6">
+            <div class="card-body">
+                <div class="steps">
+                    <div class="step-item active">
+                        <div class="step-number">1</div>
+                        <div class="step-title">填写出库信息</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-title">选择出库物品</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-title">确认出库</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-title">完成出库</div>
+                    </div>
+                </div>
+
+                <!-- 出库基本信息表单 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">出库单号</label>
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2" value="OUT20230615001" disabled>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">出库日期</label>
+                        <input type="date" class="w-full border border-gray-300 rounded px-3 py-2" value="2023-06-15">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">出库类型</label>
+                        <select class="w-full border border-gray-300 rounded px-3 py-2">
+                            <option value="project">项目出库</option>
+                            <option value="rental">租赁出库</option>
+                            <option value="transfer">调拨出库</option>
+                            <option value="other">其他出库</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">客户/项目</label>
+                        <select class="w-full border border-gray-300 rounded px-3 py-2">
+                            <option value="">请选择客户/项目</option>
+                            <option value="CL001">城市音乐节</option>
+                            <option value="CL002">企业年会</option>
+                            <option value="CL003">演唱会彩排</option>
+                            <option value="CL004">电视节目录制</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">仓库</label>
+                        <select class="w-full border border-gray-300 rounded px-3 py-2">
+                            <option value="WH001">A区主仓库</option>
+                            <option value="WH002">B区备用仓库</option>
+                            <option value="WH003">C区临时仓库</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">经办人</label>
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2" value="李工">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">预计归还日期</label>
+                        <input type="date" class="w-full border border-gray-300 rounded px-3 py-2" value="2023-06-30">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">联系电话</label>
+                        <input type="text" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="请输入联系电话">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm text-gray-600 mb-1">备注</label>
+                        <textarea class="w-full border border-gray-300 rounded px-3 py-2 h-24" placeholder="请输入备注信息"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button class="btn btn-default mr-2">取消</button>
+                    <button class="btn btn-primary">下一步</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史出库记录 -->
+        <div class="card">
+            <div class="card-header">
+                <span>历史出库记录</span>
+                <div>
+                    <input type="text" class="border border-gray-300 rounded px-3 py-1 mr-2" placeholder="搜索出库单号/物品">
+                    <button class="btn btn-default">
+                        <i class="fas fa-search mr-1"></i> 搜索
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>出库单号</th>
+                                <th>出库类型</th>
+                                <th>客户/项目</th>
+                                <th>出库日期</th>
+                                <th>预计归还日期</th>
+                                <th>出库数量</th>
+                                <th>经办人</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>OUT20230610001</td>
+                                <td>项目出库</td>
+                                <td>城市音乐节</td>
+                                <td>2023-06-10</td>
+                                <td>2023-06-20</td>
+                                <td>15</td>
+                                <td>李工</td>
+                                <td><span class="tag tag-blue">使用中</span></td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">打印</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>OUT20230605002</td>
+                                <td>租赁出库</td>
+                                <td>企业年会</td>
+                                <td>2023-06-05</td>
+                                <td>2023-06-08</td>
+                                <td>8</td>
+                                <td>王助理</td>
+                                <td><span class="tag tag-green">已归还</span></td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">打印</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>OUT20230601003</td>
+                                <td>项目出库</td>
+                                <td>演唱会彩排</td>
+                                <td>2023-06-01</td>
+                                <td>2023-06-15</td>
+                                <td>12</td>
+                                <td>赵工</td>
+                                <td><span class="tag tag-orange">即将到期</span></td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">打印</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>OUT20230528001</td>
+                                <td>调拨出库</td>
+                                <td>-</td>
+                                <td>2023-05-28</td>
+                                <td>-</td>
+                                <td>5</td>
+                                <td>张经理</td>
+                                <td><span class="tag tag-green">已完成</span></td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">打印</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>OUT20230525002</td>
+                                <td>租赁出库</td>
+                                <td>电视节目录制</td>
+                                <td>2023-05-25</td>
+                                <td>2023-05-30</td>
+                                <td>10</td>
+                                <td>李工</td>
+                                <td><span class="tag tag-red">逾期未还</span></td>
+                                <td>
+                                    <button class="text-blue-600 mr-2">查看</button>
+                                    <button class="text-blue-600 mr-2">打印</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination p-4">
+                    <div class="page-item">
+                        <a class="page-link"><i class="fas fa-angle-left"></i></a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link active">1</a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link">2</a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link">3</a>
+                    </div>
+                    <div class="page-item">
+                        <a class="page-link"><i class="fas fa-angle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

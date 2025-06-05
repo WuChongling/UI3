@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舞美数据中台管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* 页面特定样式 */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .prototype-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .screen-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .screen-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1890ff;
+        }
+        
+        .screen-frame {
+            width: 100%;
+            height: 500px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://via.placeholder.com/30x30" alt="Logo" class="mr-2">
+            <h1>舞美数据中台</h1>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="index.html" class="sidebar-menu-item active">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="dashboard.html" class="sidebar-menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>数据看板</span>
+            </a>
+            <a href="alert-center.html" class="sidebar-menu-item">
+                <i class="fas fa-bell"></i>
+                <span>智能预警中心</span>
+            </a>
+            <a href="props-management.html" class="sidebar-menu-item">
+                <i class="fas fa-box"></i>
+                <span>道具管理</span>
+            </a>
+            <a href="inbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>入库管理</span>
+            </a>
+            <a href="outbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>出库管理</span>
+            </a>
+            <a href="supplier-management.html" class="sidebar-menu-item">
+                <i class="fas fa-truck"></i>
+                <span>供应商管理</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 顶部状态栏 -->
+    <header class="top-header">
+        <div class="flex items-center">
+            <h2 class="text-xl font-bold">舞美数据中台</h2>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                <span>管理员</span>
+                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content px-6 py-6">
+        <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10 mt-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">舞美数据中台管理系统</h1>
+            <p class="text-gray-600">高保真B端产品原型设计</p>
+        </header>
+        
+        <div class="prototype-container">
+            <!-- 系统首页（数据驾驶舱） -->
+            <div class="screen-container">
+                <h2 class="screen-title">系统首页（数据驾驶舱）</h2>
+                <div class="screen-frame">
+                    <iframe src="dashboard.html" title="数据驾驶舱"></iframe>
+                </div>
+            </div>
+            
+            <!-- 道具档案管理 -->
+            <div class="screen-container">
+                <h2 class="screen-title">道具档案管理</h2>
+                <div class="screen-frame">
+                    <iframe src="props-management.html" title="道具档案管理"></iframe>
+                </div>
+            </div>
+            
+            <!-- 供应商/客户管理 -->
+            <div class="screen-container">
+                <h2 class="screen-title">供应商/客户管理</h2>
+                <div class="screen-frame">
+                    <iframe src="supplier-management.html" title="供应商/客户管理"></iframe>
+                </div>
+            </div>
+            
+            <!-- 入库管理 -->
+            <div class="screen-container">
+                <h2 class="screen-title">入库管理</h2>
+                <div class="screen-frame">
+                    <iframe src="inbound.html" title="入库管理"></iframe>
+                </div>
+            </div>
+
+            <!-- 出库管理 -->
+            <div class="screen-container">
+                <h2 class="screen-title">出库管理</h2>
+                <div class="screen-frame">
+                    <iframe src="outbound.html" title="出库管理"></iframe>
+                </div>
+            </div>
+
+            <!-- 智能预警中心 -->
+            <div class="screen-container">
+                <h2 class="screen-title">智能预警中心</h2>
+                <div class="screen-frame">
+                    <iframe src="alert-center.html" title="智能预警中心"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

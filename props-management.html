@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>道具管理 - 舞美数据中台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+        }
+        
+        .top-header {
+            background-color: #3859D3;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .prop-card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .prop-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .prop-image {
+            width: 160px;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-available {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .status-rented {
+            background-color: #fff7e6;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+
+        .status-maintenance {
+            background-color: #fff1f0;
+            color: #f5222d;
+            border: 1px solid #ffa39e;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #096dd9;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://via.placeholder.com/30x30" alt="Logo" class="mr-2">
+            <h1>舞美数据中台</h1>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="index.html" class="sidebar-menu-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="dashboard.html" class="sidebar-menu-item">
+                <i class="fas fa-chart-line"></i>
+                <span>数据看板</span>
+            </a>
+            <a href="alert-center.html" class="sidebar-menu-item">
+                <i class="fas fa-bell"></i>
+                <span>智能预警中心</span>
+            </a>
+            <a href="props-management.html" class="sidebar-menu-item active">
+                <i class="fas fa-box"></i>
+                <span>道具管理</span>
+            </a>
+            <a href="inbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>入库管理</span>
+            </a>
+            <a href="outbound.html" class="sidebar-menu-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>出库管理</span>
+            </a>
+            <a href="supplier-management.html" class="sidebar-menu-item">
+                <i class="fas fa-users"></i>
+                <span>供应商管理</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 顶部状态栏 -->
+    <header class="top-header">
+        <div class="flex items-center">
+            <h2 class="text-xl font-bold">道具管理</h2>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                <span>管理员</span>
+                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">道具列表</h2>
+            <div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus mr-2"></i> 新增道具
+                </button>
+            </div>
+        </div>
+
+        <!-- 搜索筛选区 -->
+        <div class="bg-white p-3 rounded-lg shadow-sm mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                    <input type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm" placeholder="搜索道具名称">
+                </div>
+                <div>
+                    <select class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm">
+                        <option value="">道具类型</option>
+                        <option value="display">显示设备</option>
+                        <option value="audio">音响设备</option>
+                        <option value="lighting">灯光设备</option>
+                    </select>
+                </div>
+                <div>
+                    <select class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm">
+                        <option value="">使用状态</option>
+                        <option value="available">可用</option>
+                        <option value="rented">已租用</option>
+                        <option value="maintenance">维护中</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="btn btn-primary py-1.5 px-3 text-sm">
+                        <i class="fas fa-search mr-1"></i> 搜索
+                    </button>
+                    <button class="btn bg-gray-100 text-gray-600 hover:bg-gray-200 py-1.5 px-3 text-sm">
+                        <i class="fas fa-redo mr-1"></i> 重置
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 道具列表 -->
+        <div class="grid grid-cols-1 gap-3">
+            <!-- 23.8寸戴尔显示器 -->
+            <div class="prop-card">
+                <div class="flex p-3">
+                    <div class="flex-shrink-0">
+                        <img src="path/to/monitor-image.jpg" alt="戴尔显示器" class="prop-image">
+                    </div>
+                    <div class="flex-grow ml-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-base font-semibold">23.8寸戴尔显示器</h3>
+                                <p class="text-gray-500 text-sm mt-0.5">显示设备</p>
+                            </div>
+                            <span class="status-tag status-available">可用</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            <div>
+                                <p class="text-gray-500 text-sm">配件：显示屏一个、电源线一条、大DP线一条、鼠标一个、键盘一个</p>
+                                <p class="text-gray-500 text-sm mt-1">规格型号：Dell P2422H</p>
+                                <p class="text-gray-500 text-sm mt-1">货位：1-1-2</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">库存数量：1台</p>
+                                <p class="text-gray-500 text-sm mt-1">入库日期：2023-04-15</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">查看详情</button>
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">编辑</button>
+                            <button class="btn bg-red-50 text-red-600 hover:bg-red-100">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 单通道DI盒 -->
+            <div class="prop-card">
+                <div class="flex p-4">
+                    <div class="flex-shrink-0">
+                        <img src="path/to/di-box-image.jpg" alt="单通道DI盒" class="prop-image">
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-semibold">单通道DI盒</h3>
+                                <p class="text-gray-500 text-sm mt-0.5">音响设备</p>
+                            </div>
+                            <span class="status-tag status-available">可用</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                                <div>
+                                    <p class="text-gray-500 text-sm">配件：无</p>
+                                <p class="text-gray-500 text-sm mt-1">规格型号：标准单通道</p>
+                                <p class="text-gray-500 text-sm mt-1">货位：2-5-2</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">库存数量：1个</p>
+                                <p class="text-gray-500 text-sm mt-1">入库日期：2023-04-20</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">查看详情</button>
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">编辑</button>
+                            <button class="btn bg-red-50 text-red-600 hover:bg-red-100">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 双通道立体声DI盒 -->
+            <div class="prop-card">
+                <div class="flex p-4">
+                    <div class="flex-shrink-0">
+                        <img src="path/to/stereo-di-box-image.jpg" alt="双通道立体声DI盒" class="prop-image">
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-semibold">双通道立体声DI盒</h3>
+                                <p class="text-gray-500 text-sm mt-0.5">音响设备</p>
+                            </div>
+                            <span class="status-tag status-rented">已租用</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                                <div>
+                                    <p class="text-gray-500 text-sm">配件：无</p>
+                                <p class="text-gray-500 text-sm mt-1">规格型号：专业双通道</p>
+                                <p class="text-gray-500 text-sm mt-1">货位：2-5-2</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">库存数量：1个</p>
+                                <p class="text-gray-500 text-sm mt-1">入库日期：2023-04-18</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">查看详情</button>
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">编辑</button>
+                            <button class="btn bg-red-50 text-red-600 hover:bg-red-100">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 德国SE A6L音柱 -->
+            <div class="prop-card">
+                <div class="flex p-4">
+                    <div class="flex-shrink-0">
+                        <img src="path/to/se-a6l-image.jpg" alt="德国SE A6L音柱" class="prop-image">
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-semibold">德国SE A6L音柱</h3>
+                                <p class="text-gray-500 text-sm mt-0.5">音响设备</p>
+                            </div>
+                            <span class="status-tag status-available">可用</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                                <div>
+                                    <p class="text-gray-500 text-sm">配件：每台电源一根</p>
+                                <p class="text-gray-500 text-sm mt-1">规格型号：SE A6L</p>
+                                <p class="text-gray-500 text-sm mt-1">货位：14号仓位</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">库存数量：1套</p>
+                                <p class="text-gray-500 text-sm mt-1">入库日期：2023-04-22</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">查看详情</button>
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">编辑</button>
+                            <button class="btn bg-red-50 text-red-600 hover:bg-red-100">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 国产单15音响 -->
+            <div class="prop-card">
+                <div class="flex p-4">
+                    <div class="flex-shrink-0">
+                        <img src="path/to/speaker-15-image.jpg" alt="国产单15音响" class="prop-image">
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-semibold">国产单15音响</h3>
+                                <p class="text-gray-500 text-sm mt-0.5">音响设备</p>
+                            </div>
+                            <span class="status-tag status-maintenance">维护中</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                                <div>
+                                    <p class="text-gray-500 text-sm">配件：2条音响线、1台功放、2只音响</p>
+                                <p class="text-gray-500 text-sm mt-1">规格型号：15寸单元</p>
+                                <p class="text-gray-500 text-sm mt-1">货位：10号仓位</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">库存数量：1套</p>
+                                <p class="text-gray-500 text-sm mt-1">入库日期：2023-04-25</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">查看详情</button>
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">编辑</button>
+                            <button class="btn bg-red-50 text-red-600 hover:bg-red-100">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JBL 715单15音响 -->
+            <div class="prop-card">
+                <div class="flex p-4">
+                    <div class="flex-shrink-0">
+                        <img src="path/to/jbl-715-image.jpg" alt="JBL 715单15音响" class="prop-image">
+                    </div>
+                    <div class="flex-grow ml-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-semibold">JBL 715单15音响</h3>
+                                <p class="text-gray-500 text-sm mt-0.5">音响设备</p>
+                            </div>
+                            <span class="status-tag status-rented">已租用</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                                <div>
+                                    <p class="text-gray-500 text-sm">配件：带皇冠功放</p>
+                                <p class="text-gray-500 text-sm mt-1">规格型号：JBL 715</p>
+                                <p class="text-gray-500 text-sm mt-1">货位：10号仓位</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">库存数量：1套</p>
+                                <p class="text-gray-500 text-sm mt-1">入库日期：2023-04-28</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">查看详情</button>
+                            <button class="btn bg-blue-50 text-blue-600 hover:bg-blue-100">编辑</button>
+                            <button class="btn bg-red-50 text-red-600 hover:bg-red-100">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
